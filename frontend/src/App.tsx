@@ -1,21 +1,22 @@
-import React, { useEffect } from "react";
-import axios from "axios";
-import "./App.css";
+// dependencies
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+// pages
+import Home from "./pages/Home";
+import CreatePost from "./pages/CreatePost";
 
-function App() {
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/posts");
-        console.log(response);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchData();
-  }, []);
-
-  return <div className="App"></div>;
-}
+const App = () => {
+  return (
+    <div className="App">
+      <Router>
+        <Link to="/createPost">Create a Post</Link>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/createPost" element={<CreatePost />} />
+        </Routes>
+      </Router>
+    </div>
+  );
+};
 
 export default App;
