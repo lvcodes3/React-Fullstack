@@ -7,8 +7,10 @@ import CreatePost from "./pages/CreatePost";
 
 const App = () => {
   return (
-    <div className="App">
+    <div className="text-center">
       <Router>
+        <Link to="/">Home Page</Link>
+        <br />
         <Link to="/createPost">Create a Post</Link>
         <Routes>
           <Route path="/" element={<Home />} />

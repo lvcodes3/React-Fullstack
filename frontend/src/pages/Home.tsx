@@ -1,3 +1,4 @@
+// dependencies
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -28,11 +29,11 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center h-screen">
+    <div className="flex flex-col items-center">
       {posts.map((post) => {
         return (
           <div
-            className="w-3/4 h-96 border-2 border-blue-600 rounded-md my-5"
+            className="w-3/4 h-80 border-2 border-blue-600 rounded-md my-5"
             key={post.id}
           >
             <div className="flex items-center justify-center h-1/4 bg-blue-600">
