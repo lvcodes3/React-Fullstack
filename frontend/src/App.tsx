@@ -10,7 +10,6 @@ const App = () => {
   return (
     <div>
       <Router>
-        {/* NAVBAR */}
         <nav className="bg-blue-600 flex items-center justify-start h-16">
           <Link
             to="/"
