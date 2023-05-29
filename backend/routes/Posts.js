@@ -6,31 +6,43 @@ const router = express.Router();
 const { posts } = require("../models");
 
 router.get("/", async (req, res) => {
-  // let sequelize retrieve all posts
-  const listOfPosts = await posts.findAll();
-  res.json(listOfPosts);
+  try {
+    // let sequelize retrieve all posts
+    const listOfPosts = await posts.findAll();
+    res.json(listOfPosts);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.get("/:id", async (req, res) => {
-  // get the passed in id
-  const id = req.params.id;
+  try {
+    // get the passed in id
+    const id = req.params.id;
 
-  // let sequelize retrieve the post by id
-  const post = await posts.findByPk(id);
+    // let sequelize retrieve the post by id
+    const post = await posts.findByPk(id);
 
-  // return the post
-  res.json(post);
+    // return the post
+    res.json(post);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post("/", async (req, res) => {
-  // retrieve data
-  const post = req.body;
+  try {
+    // retrieve data
+    const post = req.body;
 
-  // let sequelize create the post with the provided data
-  await posts.create(post);
+    // let sequelize create the post with the provided data
+    await posts.create(post);
 
-  // return the post
-  res.json(post);
+    // return the post
+    res.json(post);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;

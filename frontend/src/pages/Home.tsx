@@ -36,7 +36,7 @@ const Home = () => {
         return (
           <div
             key={post.id}
-            className="w-3/4 h-80 border-2 border-blue-600 rounded-md mb-10"
+            className="w-3/4 h-80 cursor-pointer border-2 border-blue-600 rounded-md mb-10"
             onClick={() => {
               navigate(`/post/${post.id}`);
             }}

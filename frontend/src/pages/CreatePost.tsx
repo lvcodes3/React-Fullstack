@@ -25,8 +25,12 @@ const CreatePost = () => {
 
   // sending validated data to the backend API
   const formSubmit = async (data: {}) => {
-    await axios.post("http://localhost:5000/posts", data);
-    navigate("/");
+    try {
+      await axios.post("http://localhost:5000/posts", data);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

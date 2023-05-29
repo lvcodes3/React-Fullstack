@@ -7,7 +7,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 // import Routes //
-const postRouter = require("./routes/Posts");
+const postsRouter = require("./routes/Posts");
+const commentsRouter = require("./routes/Comments");
 
 // require and use env variables //
 require("dotenv").config();
@@ -19,7 +20,8 @@ app.use(cors());
 app.use(morgan("tiny"));
 
 // Main Routes //
-app.use("/posts", postRouter);
+app.use("/posts", postsRouter);
+app.use("/comments", commentsRouter);
 
 const db = require("./models");
 db.sequelize.sync().then(() => {
