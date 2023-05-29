@@ -11,6 +11,17 @@ router.get("/", async (req, res) => {
   res.json(listOfPosts);
 });
 
+router.get("/:id", async (req, res) => {
+  // get the passed in id
+  const id = req.params.id;
+
+  // let sequelize retrieve the post by id
+  const post = await posts.findByPk(id);
+
+  // return the post
+  res.json(post);
+});
+
 router.post("/", async (req, res) => {
   // retrieve data
   const post = req.body;

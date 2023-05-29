@@ -1,9 +1,11 @@
 // dependencies
+import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik"; // Formik helps with forms
 import * as Yup from "yup"; // Yup helps with data form validation
 import axios from "axios";
 
 const CreatePost = () => {
+  let navigate = useNavigate();
   // initial values for the Formik form
   const intialValues = {
     title: "",
@@ -23,13 +25,12 @@ const CreatePost = () => {
 
   // sending validated data to the backend API
   const formSubmit = async (data: {}) => {
-    console.log(data);
-    const response = await axios.post("http://localhost:5000/posts", data);
-    console.log(response);
+    await axios.post("http://localhost:5000/posts", data);
+    navigate("/");
   };
 
   return (
-    <div className="flex justify-center my-5">
+    <div className="flex justify-center mt-10">
       <Formik
         initialValues={intialValues}
         onSubmit={formSubmit}
@@ -43,7 +44,6 @@ const CreatePost = () => {
             component="span"
           />
           <Field
-            id="inputCreatePost"
             name="title"
             className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
             placeholder="Title"
@@ -53,7 +53,6 @@ const CreatePost = () => {
           <label className="block mb-2 font-bold">Post:</label>
           <ErrorMessage name="text" className="text-red-500" component="span" />
           <Field
-            id="inputCreatePost"
             name="text"
             className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
             placeholder="Post"
@@ -67,7 +66,6 @@ const CreatePost = () => {
             component="span"
           />
           <Field
-            id="inputCreatePost"
             name="username"
             className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
             placeholder="Username"

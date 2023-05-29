@@ -1,5 +1,6 @@
 // dependencies
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 type PostObject = {
@@ -12,6 +13,7 @@ type PostObject = {
 };
 
 const Home = () => {
+  let navigate = useNavigate();
   const [posts, setPosts] = useState<PostObject[]>([]);
 
   useEffect(() => {
@@ -29,12 +31,15 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mt-10">
       {posts.map((post) => {
         return (
           <div
-            className="w-3/4 h-80 border-2 border-blue-600 rounded-md my-5"
             key={post.id}
+            className="w-3/4 h-80 border-2 border-blue-600 rounded-md mb-10"
+            onClick={() => {
+              navigate(`/post/${post.id}`);
+            }}
           >
             <div className="flex items-center justify-center h-1/4 bg-blue-600">
               <p className="text-center text-white">{post.title}</p>
