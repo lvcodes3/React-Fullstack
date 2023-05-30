@@ -26,12 +26,13 @@ router.post("/", async (req, res) => {
     const comment = req.body;
 
     // let sequelize create the comment with the provided data
-    await comments.create(comment);
+    const createdComment = await comments.create(comment);
 
-    // return the comment
-    res.json(comment);
+    // return the created comment from the db
+    res.status(201).json(createdComment);
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Failed to create comment" });
   }
 });
 

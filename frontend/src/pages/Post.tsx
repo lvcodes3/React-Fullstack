@@ -24,6 +24,7 @@ const Post = () => {
   const { id } = useParams();
   const [post, setPost] = useState<PostObject>({} as PostObject);
   const [comments, setComments] = useState<CommentObject[]>([]);
+  const [newComment, setNewComment] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,13 +32,13 @@ const Post = () => {
         // get post
         let response = await axios.get(`http://localhost:5000/posts/${id}`);
         if (response.status === 200) {
-          console.log(response.data);
+          //console.log(response.data);
           setPost(response.data);
         }
         // get comments associated to the post
         response = await axios.get(`http://localhost:5000/comments/${id}`);
         if (response.status === 200) {
-          console.log(response.data);
+          //console.log(response.data);
           setComments(response.data);
         }
       } catch (err) {
@@ -46,6 +47,38 @@ const Post = () => {
     };
     fetchData();
   }, [id]);
+
+  const addComment = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/comments", {
+        comment: newComment,
+        postId: id,
+      });
+
+      if (response.status === 201) {
+        // create the comment to add based on response
+        const commentToAdd: CommentObject = {
+          id: response.data.id,
+          comment: response.data.comment,
+          createdAt: response.data.createdAt,
+          updatedAt: response.data.updatedAt,
+          postId: response.data.postId,
+        };
+
+        // append the created comment to the list of comments
+        setComments([...comments, commentToAdd]);
+
+        // reset the comment field
+        setNewComment("");
+      } else {
+        console.log("error?");
+        // reset the comment field
+        setNewComment("");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="flex mt-10">
@@ -66,10 +99,17 @@ const Post = () => {
           <input
             className="h-12 border-2 border-blue-600 rounded-md"
             type="text"
+            value={newComment}
+            onChange={(e) => {
+              setNewComment(e.target.value);
+            }}
             placeholder="Comment"
             autoComplete="off"
           />
-          <button className="text-white bg-blue-600 border-2 border-blue-600 rounded-md p-2">
+          <button
+            className="text-white bg-blue-600 border-2 border-blue-600 rounded-md p-2"
+            onClick={addComment}
+          >
             Add Comment
           </button>
         </div>
