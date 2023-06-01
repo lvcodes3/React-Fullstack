@@ -4,31 +4,41 @@ import { Formik, Form, Field, ErrorMessage } from "formik"; // Formik helps with
 import * as Yup from "yup"; // Yup helps with data form validation
 import axios from "axios";
 
-const CreatePost = () => {
+const Register = () => {
   let navigate = useNavigate();
 
   // initial values for the Formik form
   const intialValues = {
-    title: "",
-    text: "",
     username: "",
+    password: "",
   };
 
   // using Yup to validate form data
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("The Title is a required field!"),
-    text: Yup.string().required("The Post is a required field!"),
     username: Yup.string()
       .min(3)
       .max(15)
       .required("The Username is a required field!"),
+    password: Yup.string()
+      .min(4)
+      .max(20)
+      .required("The Password is a required field!"),
   });
 
   // sending validated data to the backend API
   const formSubmit = async (data: {}) => {
     try {
-      await axios.post("http://localhost:5000/posts", data);
-      navigate("/");
+      const response = await axios.post(
+        "http://localhost:5000/auth/register",
+        data
+      );
+
+      if (
+        response.status === 201 &&
+        response.data.message === "You have successfully registered."
+      ) {
+        navigate("/");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -42,28 +52,6 @@ const CreatePost = () => {
         onSubmit={formSubmit}
       >
         <Form className="w-3/4 p-6 border-2 border-blue-600 rounded-md">
-          <label className="block mb-2 font-bold">Title:</label>
-          <ErrorMessage
-            name="title"
-            className="text-red-500"
-            component="span"
-          />
-          <Field
-            name="title"
-            className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
-            placeholder="Title"
-            autoComplete="off"
-          />
-
-          <label className="block mb-2 font-bold">Post:</label>
-          <ErrorMessage name="text" className="text-red-500" component="span" />
-          <Field
-            name="text"
-            className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
-            placeholder="Post"
-            autoComplete="off"
-          />
-
           <label className="block mb-2 font-bold">Username:</label>
           <ErrorMessage
             name="username"
@@ -77,15 +65,29 @@ const CreatePost = () => {
             autoComplete="off"
           />
 
+          <label className="block mb-2 font-bold">Password:</label>
+          <ErrorMessage
+            name="password"
+            className="text-red-500"
+            component="span"
+          />
+          <Field
+            type="password"
+            name="password"
+            className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
+            placeholder="Password"
+            autoComplete="off"
+          />
+
           <button
             type="submit"
             className="w-full p-2 text-white bg-blue-600 rounded-md"
           >
-            Create Post
+            Register
           </button>
         </Form>
       </Formik>
     </div>
   );
 };
-export default CreatePost;
+export default Register;

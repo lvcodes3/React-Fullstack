@@ -2,17 +2,23 @@
 const express = require("express");
 const router = express.Router();
 
+// bcrypt for authentication //
+const bcrypt = require("bcrypt");
+
 // get the users model from sequelize //
 const { users } = require("../models");
 
-// import bcrypt for hashing password
-const bcrypt = require("bcrypt");
-
-// USER REGISTRATION ROUTE //
-router.post("/", async (req, res) => {
+// REGISTER ROUTE //
+router.post("/register", async (req, res) => {
   try {
     // retrieve data
     const { username, password } = req.body;
+
+    // ensure username is unique
+    const user = await users.findOne({ where: { username } });
+    if (user) {
+      return res.status(401).json({ message: "Username already exists." });
+    }
 
     // hash the password using bcrypt
     const saltRounds = 10;
@@ -25,32 +31,34 @@ router.post("/", async (req, res) => {
       password: bcryptPassword,
     });
 
-    res.status(201).json("SUCCESS");
+    // return response
+    res.status(201).json({ message: "You have successfully registered." });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to create user" });
+    res.status(500).json({ error: "Failed to create user." });
   }
 });
 
-// USER LOGIN ROUTE //
+// LOGIN ROUTE //
 router.post("/login", async (req, res) => {
   try {
     // retrieve data
     const { username, password } = req.body;
 
-    // check if user exists
+    // ensure user exists
     const user = await users.findOne({ where: { username } });
     if (!user) {
-      return res.status(401).json({ error: "User does not exist" });
+      return res.status(401).json({ message: "Username does not exist." });
     }
 
-    //
+    // ensure password is correct
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: "Incorrect password" });
+      return res.status(401).json({ message: "Password is incorrect." });
     }
 
-    res.status(200).json({ message: "You have successfully logged in" });
+    // return response
+    res.status(200).json({ message: "You have successfully logged in." });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Failed to login user" });

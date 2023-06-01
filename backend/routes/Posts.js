@@ -5,16 +5,21 @@ const router = express.Router();
 // get the posts model from sequelize //
 const { posts } = require("../models");
 
+// GET ALL POSTS ROUTE //
 router.get("/", async (req, res) => {
   try {
     // let sequelize retrieve all posts
     const listOfPosts = await posts.findAll();
-    res.json(listOfPosts);
+
+    //return posts
+    res.status(200).json(listOfPosts);
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Failed to get all posts." });
   }
 });
 
+// GET POST BY ID ROUTE //
 router.get("/:id", async (req, res) => {
   try {
     // get the passed in id
@@ -23,13 +28,15 @@ router.get("/:id", async (req, res) => {
     // let sequelize retrieve the post by id
     const post = await posts.findByPk(id);
 
-    // return the post
-    res.json(post);
+    // return post
+    res.status(200).json(post);
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Failed to get post." });
   }
 });
 
+// CREATE POST ROUTE //
 router.post("/", async (req, res) => {
   try {
     // retrieve data
@@ -38,10 +45,11 @@ router.post("/", async (req, res) => {
     // let sequelize create the post with the provided data
     await posts.create(post);
 
-    // return the post
-    res.json(post);
+    // return post
+    res.status(201).json(post);
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Failed to create post." });
   }
 });
 

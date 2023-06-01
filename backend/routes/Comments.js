@@ -5,6 +5,7 @@ const router = express.Router();
 // get the posts model from sequelize //
 const { comments } = require("../models");
 
+// GET COMMENTS BY POSTID ROUTE //
 router.get("/:postId", async (req, res) => {
   try {
     // get the passed in postId
@@ -13,13 +14,15 @@ router.get("/:postId", async (req, res) => {
     // let sequelize retrieve the comments by postId
     const commentsByPostId = await comments.findAll({ where: { postId } });
 
-    // return the comments
-    res.json(commentsByPostId);
+    // return comments
+    res.status(200).json(commentsByPostId);
   } catch (err) {
     console.log(err);
+    res.status(500).json({ error: "Failed to get all comments by postId." });
   }
 });
 
+// CREATE COMMENT ROUTE //
 router.post("/", async (req, res) => {
   try {
     // retrieve data
@@ -32,7 +35,7 @@ router.post("/", async (req, res) => {
     res.status(201).json(createdComment);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to create comment" });
+    res.status(500).json({ error: "Failed to create comment." });
   }
 });
 
