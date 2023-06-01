@@ -9,6 +9,7 @@ const morgan = require("morgan");
 // import Routes //
 const postsRouter = require("./routes/Posts");
 const commentsRouter = require("./routes/Comments");
+const usersRouter = require("./routes/Users");
 
 // require and use env variables //
 require("dotenv").config();
@@ -22,6 +23,7 @@ app.use(morgan("tiny"));
 // Main Routes //
 app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
+app.use("/auth", usersRouter);
 
 const db = require("./models");
 db.sequelize.sync().then(() => {
