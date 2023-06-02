@@ -25,14 +25,37 @@ const Login = () => {
         data
       );
 
-      if (
-        response.status === 200 &&
-        response.data.message === "You have successfully logged in."
-      ) {
+      console.log(response);
+
+      // alert any error response from the backend
+      if (response.data.error) {
+        alert(response.data.error);
+      } else {
+        // save the JWT in the session storage
+        sessionStorage.setItem("accessToken", response.data);
+        // go to home page
         navigate("/");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
+      if (err.response) {
+        if (err.response.status === 401) {
+          alert("Unauthorized: Please check your credentials");
+        } else if (err.response.status === 500) {
+          alert("Internal Server Error: Failed to login user");
+        } else {
+          alert("An error occurred. Please try again.");
+        }
+      } else if (err.request) {
+        // The request was made but no response was received
+        // `err.request` is an instance of XMLHttpRequest in the browser
+        console.log(err.request);
+        alert("No response received. Please check your internet connection.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", err.message);
+        alert("An error occurred. Please try again.");
+      }
     }
   };
 
