@@ -11,7 +11,9 @@ const { sign } = require("jsonwebtoken");
 // get the users model from sequelize //
 const { users } = require("../models");
 
+////////////////////
 // REGISTER ROUTE //
+////////////////////
 router.post("/register", async (req, res) => {
   try {
     // retrieve data
@@ -20,7 +22,7 @@ router.post("/register", async (req, res) => {
     // ensure username is unique
     const user = await users.findOne({ where: { username } });
     if (user) {
-      return res.status(401).json({ message: "Username already exists." });
+      return res.status(401).json({ error: "Username already exists." });
     }
 
     // hash the password using bcrypt
@@ -35,14 +37,18 @@ router.post("/register", async (req, res) => {
     });
 
     // return response
-    res.status(201).json({ message: "You have successfully registered." });
+    return res
+      .status(201)
+      .json({ message: "You have successfully registered." });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to create user." });
+    return res.status(500).json({ error: "Failed to create user." });
   }
 });
 
+/////////////////
 // LOGIN ROUTE //
+/////////////////
 router.post("/login", async (req, res) => {
   try {
     // retrieve data
@@ -51,26 +57,30 @@ router.post("/login", async (req, res) => {
     // ensure user exists
     const user = await users.findOne({ where: { username } });
     if (!user) {
-      return res.status(401).json({ error: "Username does not exist." });
+      return res
+        .status(401)
+        .json({ error: "Username or password is incorrect." });
     }
 
     // ensure password is correct
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: "Password is incorrect." });
+      return res
+        .status(401)
+        .json({ error: "Username or password is incorrect." });
     }
 
     // generate JWT
-    const accessToken = sign(
+    const jwt = sign(
       { id: user.id, username: user.username },
-      "importantsecret"
+      "secretcodeforjwt"
     );
 
     // return JWT response
-    return res.status(200).json(accessToken);
+    return res.status(200).json(jwt);
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "Failed to login user" });
+    return res.status(500).json({ error: "Failed to login user." });
   }
 });
 

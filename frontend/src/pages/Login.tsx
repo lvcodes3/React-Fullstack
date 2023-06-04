@@ -1,7 +1,7 @@
 // dependencies
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -10,7 +10,7 @@ const Login = () => {
   const [loginError, setLoginError] = useState<string>("");
 
   // sending validated data to the backend API
-  const formSubmit = async (e: any) => {
+  const formSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       // prevent screen refresh
       e.preventDefault();
@@ -20,30 +20,53 @@ const Login = () => {
         password,
       };
 
-      const response = await axios.post(
+      const response = await axios.post<string>(
         "http://localhost:5000/auth/login",
         data
       );
+
       console.log(response);
 
-      if (response.status === 200) {
-        // save the JWT in the session storage
-        sessionStorage.setItem("accessToken", response.data);
-        // go to home page
-        navigate("/");
-      } else if (response.status === 401) {
-        setLoginError(response.data.error);
-      } else if (response.status === 500) {
-        alert(response.data.error);
-      }
+      // save the JWT in the session storage
+      sessionStorage.setItem("accessToken", response.data);
+
+      // go to home page
+      navigate("/");
     } catch (err: any) {
       console.log(err);
-      if (err.response) {
-        if (err.response.status === 401) {
-          setLoginError(err.response.data.error);
-        } else if (err.response.status === 500) {
-          alert(err.response.data.error);
+
+      type ErrorResponse = {
+        error: string;
+      };
+
+      // error is an Axios Error
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<ErrorResponse>;
+
+        // axios error has a response
+        if (axiosError.response) {
+          const errorResponse = axiosError.response.data as ErrorResponse;
+          if (axiosError.response.status === 401) {
+            setLoginError(errorResponse.error);
+          } else if (axiosError.response.status === 500) {
+            alert(errorResponse.error);
+          }
         }
+        // axios error has a request
+        else if (axiosError.request) {
+          console.log(axiosError.request);
+          alert("No response recieved. Please check your internet connection.");
+        }
+        // axios error has a message
+        else {
+          console.log("Error", axiosError.message);
+          alert("An error occurred. Please try again.");
+        }
+      }
+      // unknown error
+      else {
+        console.log("Error", err.message);
+        alert("An error occurred. Please try again.");
       }
     }
   };
