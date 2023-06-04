@@ -5,9 +5,9 @@ import axios from "axios";
 
 const Login = () => {
   let navigate = useNavigate();
-
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loginError, setLoginError] = useState<string>("");
 
   // sending validated data to the backend API
   const formSubmit = async (e: any) => {
@@ -24,37 +24,26 @@ const Login = () => {
         "http://localhost:5000/auth/login",
         data
       );
-
       console.log(response);
 
-      // alert any error response from the backend
-      if (response.data.error) {
-        alert(response.data.error);
-      } else {
+      if (response.status === 200) {
         // save the JWT in the session storage
         sessionStorage.setItem("accessToken", response.data);
         // go to home page
         navigate("/");
+      } else if (response.status === 401) {
+        setLoginError(response.data.error);
+      } else if (response.status === 500) {
+        alert(response.data.error);
       }
     } catch (err: any) {
       console.log(err);
       if (err.response) {
         if (err.response.status === 401) {
-          alert("Unauthorized: Please check your credentials");
+          setLoginError(err.response.data.error);
         } else if (err.response.status === 500) {
-          alert("Internal Server Error: Failed to login user");
-        } else {
-          alert("An error occurred. Please try again.");
+          alert(err.response.data.error);
         }
-      } else if (err.request) {
-        // The request was made but no response was received
-        // `err.request` is an instance of XMLHttpRequest in the browser
-        console.log(err.request);
-        alert("No response received. Please check your internet connection.");
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", err.message);
-        alert("An error occurred. Please try again.");
       }
     }
   };
@@ -65,6 +54,9 @@ const Login = () => {
         className="w-3/4 p-6 border-2 border-blue-600 rounded-md"
         onSubmit={formSubmit}
       >
+        {loginError && (
+          <p className="block mb-2 font-bold text-red-500">{loginError}</p>
+        )}
         <label className="block mb-2 font-bold">Username:</label>
         <input
           name="username"
@@ -74,6 +66,7 @@ const Login = () => {
           onChange={(e) => {
             setUsername(e.target.value);
           }}
+          required
         />
 
         <label className="block mb-2 font-bold">Password:</label>
@@ -86,6 +79,7 @@ const Login = () => {
           onChange={(e) => {
             setPassword(e.target.value);
           }}
+          required
         />
 
         <button

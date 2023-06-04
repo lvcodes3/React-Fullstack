@@ -11,12 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  /*
   users.associate = (models) => {
     // each user can have many posts
     users.hasMany(models.posts, {
       onDelete: "cascade", // if we delete a user, it will delete every associated post
     });
   };
+  */
 
   return users;
 };

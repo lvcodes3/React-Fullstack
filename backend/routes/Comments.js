@@ -5,6 +5,9 @@ const router = express.Router();
 // get the posts model from sequelize //
 const { comments } = require("../models");
 
+// middleware to validate the jwt
+const { validateToken } = require("../middlewares/AuthMiddleware");
+
 // GET COMMENTS BY POSTID ROUTE //
 router.get("/:postId", async (req, res) => {
   try {
@@ -23,7 +26,7 @@ router.get("/:postId", async (req, res) => {
 });
 
 // CREATE COMMENT ROUTE //
-router.post("/", async (req, res) => {
+router.post("/", validateToken, async (req, res) => {
   try {
     // retrieve data
     const comment = req.body;
@@ -35,7 +38,7 @@ router.post("/", async (req, res) => {
     res.status(201).json(createdComment);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to create comment." });
+    res.status(500).json({ error: err });
   }
 });
 

@@ -67,10 +67,10 @@ router.post("/login", async (req, res) => {
     );
 
     // return JWT response
-    res.status(200).json(accessToken);
+    return res.status(200).json(accessToken);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to login user" });
+    return res.status(500).json({ error: "Failed to login user" });
   }
 });
 

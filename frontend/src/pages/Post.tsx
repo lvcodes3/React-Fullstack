@@ -50,10 +50,20 @@ const Post = () => {
 
   const addComment = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/comments", {
-        comment: newComment,
-        postId: id,
-      });
+      const response = await axios.post(
+        "http://localhost:5000/comments",
+        {
+          comment: newComment,
+          postId: id,
+        },
+        {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        }
+      );
+
+      console.log(response);
 
       if (response.status === 201) {
         // create the comment to add based on response
@@ -70,13 +80,19 @@ const Post = () => {
 
         // reset the comment field
         setNewComment("");
-      } else {
-        console.log("error?");
+      } else if (response.status === 401 || response.status === 500) {
+        // show error
+        alert(response.data.error);
         // reset the comment field
         setNewComment("");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
+      if (err.response) {
+        if (err.response.status === 401 || err.response.status === 500) {
+          alert(err.response.data.error);
+        }
+      }
     }
   };
 
