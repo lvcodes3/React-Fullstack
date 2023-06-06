@@ -36,7 +36,7 @@ const Post = () => {
       try {
         const response = await axios.get(`http://localhost:5000/posts/${id}`, {
           headers: {
-            jwt: sessionStorage.getItem("jwt"),
+            jwt: localStorage.getItem("jwt"),
           },
         });
         //console.log("GET POST RESPONSE:");
@@ -84,7 +84,7 @@ const Post = () => {
           `http://localhost:5000/comments/${id}`,
           {
             headers: {
-              jwt: sessionStorage.getItem("jwt"),
+              jwt: localStorage.getItem("jwt"),
             },
           }
         );
@@ -141,7 +141,7 @@ const Post = () => {
         },
         {
           headers: {
-            jwt: sessionStorage.getItem("jwt"),
+            jwt: localStorage.getItem("jwt"),
           },
         }
       );

@@ -25,7 +25,7 @@ const Home = () => {
       try {
         const response = await axios.get("http://localhost:5000/posts", {
           headers: {
-            jwt: sessionStorage.getItem("jwt"),
+            jwt: localStorage.getItem("jwt"),
           },
         });
         //console.log(response);

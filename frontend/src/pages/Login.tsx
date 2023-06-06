@@ -1,13 +1,16 @@
 // dependencies
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
+// context
+import { AuthContext } from "../helpers/AuthContext";
 
 type ErrorResponse = {
   error: string;
 };
 
 const Login = () => {
+  const { setAuthState } = useContext(AuthContext);
   let navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -31,8 +34,8 @@ const Login = () => {
       //console.log(response);
 
       // save the JWT in the session storage
-      sessionStorage.setItem("jwt", response.data);
-
+      localStorage.setItem("jwt", response.data);
+      setAuthState(true);
       // go to home page
       navigate("/");
     } catch (err: unknown) {

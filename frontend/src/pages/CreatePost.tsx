@@ -33,7 +33,7 @@ const CreatePost = () => {
     try {
       await axios.post("http://localhost:5000/posts", data, {
         headers: {
-          jwt: sessionStorage.getItem("jwt"),
+          jwt: localStorage.getItem("jwt"),
         },
       });
       navigate("/");
