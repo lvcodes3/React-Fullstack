@@ -5,6 +5,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik"; // Formik helps with
 import * as Yup from "yup"; // Yup helps with data form validation
 import axios, { AxiosError } from "axios";
 
+type ErrorResponse = {
+  error: string;
+};
+
 const Register = () => {
   let navigate = useNavigate();
   const [registerError, setRegisterError] = useState<string>("");
@@ -30,23 +34,14 @@ const Register = () => {
   // sending validated data to the backend API
   const formSubmit = async (data: {}) => {
     try {
-      const response = await axios.post<string>(
-        "http://localhost:5000/auth/register",
-        data
-      );
-
-      console.log(response);
-      alert(response.data);
+      //const response =
+      await axios.post("http://localhost:5000/auth/register", data);
+      //console.log(response);
 
       // go to login page
       navigate("/login");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.log(err);
-
-      type ErrorResponse = {
-        error: string;
-      };
-
       // error is an Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -73,7 +68,7 @@ const Register = () => {
       }
       // unknown error
       else {
-        console.log("Error", err.message);
+        console.log("Error", err);
         alert("An error occurred. Please try again.");
       }
     }
@@ -87,8 +82,11 @@ const Register = () => {
         onSubmit={formSubmit}
       >
         <Form className="w-3/4 p-6 border-2 border-blue-600 rounded-md">
+          <h1 className="text-center block mb-2 font-bold">Register</h1>
           {registerError && (
-            <p className="block mb-2 font-bold text-red-500">{registerError}</p>
+            <p className="text-center block mb-2 font-bold text-red-500">
+              {registerError}
+            </p>
           )}
           <label className="block mb-2 font-bold">Username:</label>
           <ErrorMessage

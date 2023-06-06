@@ -1,7 +1,7 @@
 // dependencies
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 type PostObject = {
   id: number;
@@ -15,9 +15,14 @@ type PostObject = {
 type CommentObject = {
   id: number;
   comment: string;
+  username: string;
   createdAt: string;
   updatedAt: string;
   postId: number;
+};
+
+type ErrorResponse = {
+  error: string;
 };
 
 const Post = () => {
@@ -27,25 +32,103 @@ const Post = () => {
   const [newComment, setNewComment] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getPost = async () => {
       try {
-        // get post
-        let response = await axios.get(`http://localhost:5000/posts/${id}`);
-        if (response.status === 200) {
-          //console.log(response.data);
-          setPost(response.data);
-        }
-        // get comments associated to the post
-        response = await axios.get(`http://localhost:5000/comments/${id}`);
-        if (response.status === 200) {
-          //console.log(response.data);
-          setComments(response.data);
-        }
-      } catch (err) {
+        const response = await axios.get(`http://localhost:5000/posts/${id}`, {
+          headers: {
+            jwt: sessionStorage.getItem("jwt"),
+          },
+        });
+        //console.log("GET POST RESPONSE:");
+        //console.log(response);
+        setPost(response.data);
+      } catch (err: unknown) {
         console.log(err);
+        // Axios Error
+        if (axios.isAxiosError(err)) {
+          const axiosError = err as AxiosError<ErrorResponse>;
+
+          // axios error has a response
+          if (axiosError.response) {
+            const errorResponse = axiosError.response.data as ErrorResponse;
+            if (axiosError.response.status === 403) {
+              alert(errorResponse.error);
+            } else if (axiosError.response.status === 500) {
+              alert(errorResponse.error);
+            }
+          }
+          // axios error has a request
+          else if (axiosError.request) {
+            console.log(axiosError.request);
+            alert(
+              "No response recieved. Please check your internet connection."
+            );
+          }
+          // axios error has a message
+          else {
+            console.log("Error", axiosError.message);
+            alert("An error occurred. Please try again.");
+          }
+        }
+        // Unknown Error
+        else {
+          console.log("Error", err);
+          alert("An error occurred. Please try again.");
+        }
       }
     };
-    fetchData();
+
+    const getComments = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/comments/${id}`,
+          {
+            headers: {
+              jwt: sessionStorage.getItem("jwt"),
+            },
+          }
+        );
+        //console.log("GET COMMENTS RESPONSE:");
+        //console.log(response);
+        setComments(response.data);
+      } catch (err: unknown) {
+        console.log(err);
+        // Axios Error
+        if (axios.isAxiosError(err)) {
+          const axiosError = err as AxiosError<ErrorResponse>;
+
+          // axios error has a response
+          if (axiosError.response) {
+            const errorResponse = axiosError.response.data as ErrorResponse;
+            if (axiosError.response.status === 403) {
+              alert(errorResponse.error);
+            } else if (axiosError.response.status === 500) {
+              alert(errorResponse.error);
+            }
+          }
+          // axios error has a request
+          else if (axiosError.request) {
+            console.log(axiosError.request);
+            alert(
+              "No response recieved. Please check your internet connection."
+            );
+          }
+          // axios error has a message
+          else {
+            console.log("Error", axiosError.message);
+            alert("An error occurred. Please try again.");
+          }
+        }
+        // Unknown Error
+        else {
+          console.log("Error", err);
+          alert("An error occurred. Please try again.");
+        }
+      }
+    };
+
+    getPost();
+    getComments();
   }, [id]);
 
   const addComment = async () => {
@@ -58,40 +141,58 @@ const Post = () => {
         },
         {
           headers: {
-            accessToken: sessionStorage.getItem("accessToken"),
+            jwt: sessionStorage.getItem("jwt"),
           },
         }
       );
+      //console.log("ADD COMMENT RESPONSE:");
+      //console.log(response);
 
-      console.log(response);
+      // create the new comment to add
+      const commentToAdd: CommentObject = {
+        id: response.data.id,
+        comment: response.data.comment,
+        username: response.data.username,
+        createdAt: response.data.createdAt,
+        updatedAt: response.data.updatedAt,
+        postId: response.data.postId,
+      };
 
-      if (response.status === 201) {
-        // create the comment to add based on response
-        const commentToAdd: CommentObject = {
-          id: response.data.id,
-          comment: response.data.comment,
-          createdAt: response.data.createdAt,
-          updatedAt: response.data.updatedAt,
-          postId: response.data.postId,
-        };
+      // append the created comment to the list of comments
+      setComments([...comments, commentToAdd]);
 
-        // append the created comment to the list of comments
-        setComments([...comments, commentToAdd]);
-
-        // reset the comment field
-        setNewComment("");
-      } else if (response.status === 401 || response.status === 500) {
-        // show error
-        alert(response.data.error);
-        // reset the comment field
-        setNewComment("");
-      }
-    } catch (err: any) {
+      // reset the comment field
+      setNewComment("");
+    } catch (err: unknown) {
       console.log(err);
-      if (err.response) {
-        if (err.response.status === 401 || err.response.status === 500) {
-          alert(err.response.data.error);
+      // Axios Error
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<ErrorResponse>;
+
+        // axios error has a response
+        if (axiosError.response) {
+          const errorResponse = axiosError.response.data as ErrorResponse;
+          if (axiosError.response.status === 403) {
+            alert(errorResponse.error);
+          } else if (axiosError.response.status === 500) {
+            alert(errorResponse.error);
+          }
         }
+        // axios error has a request
+        else if (axiosError.request) {
+          console.log(axiosError.request);
+          alert("No response recieved. Please check your internet connection.");
+        }
+        // axios error has a message
+        else {
+          console.log("Error", axiosError.message);
+          alert("An error occurred. Please try again.");
+        }
+      }
+      // Unknown Error
+      else {
+        console.log("Error", err);
+        alert("An error occurred. Please try again.");
       }
     }
   };
@@ -137,6 +238,7 @@ const Post = () => {
                 className="border-2 border-blue-600 rounded-md p-5 mb-5"
               >
                 {comment.comment}
+                <br />- {comment.username}
               </div>
             );
           })}

@@ -5,8 +5,11 @@ const router = express.Router();
 // bcrypt for authentication //
 const bcrypt = require("bcrypt");
 
-// jwt for authentication
+// jwt for authentication //
 const { sign } = require("jsonwebtoken");
+
+// allow use of env variables //
+require("dotenv").config();
 
 // get the users model from sequelize //
 const { users } = require("../models");
@@ -31,18 +34,16 @@ router.post("/register", async (req, res) => {
     const bcryptPassword = await bcrypt.hash(password, salt); // hashing the password
 
     // let sequelize create the user
-    await users.create({
+    const newUser = await users.create({
       username,
       password: bcryptPassword,
     });
 
     // return response
-    return res
-      .status(201)
-      .json({ message: "You have successfully registered." });
+    return res.status(201).json(newUser);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Failed to create user." });
+    console.log(`Error registering: ${err}`);
+    return res.status(500).json({ error: "Error registering." });
   }
 });
 
@@ -59,7 +60,7 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .json({ error: "Username or password is incorrect." });
+        .json({ error: "Username and / or password is incorrect." });
     }
 
     // ensure password is correct
@@ -67,20 +68,20 @@ router.post("/login", async (req, res) => {
     if (!isValidPassword) {
       return res
         .status(401)
-        .json({ error: "Username or password is incorrect." });
+        .json({ error: "Username and / or password is incorrect." });
     }
 
     // generate JWT
     const jwt = sign(
       { id: user.id, username: user.username },
-      "secretcodeforjwt"
+      process.env.JWT_SECRET
     );
 
     // return JWT response
     return res.status(200).json(jwt);
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Failed to login user." });
+    console.log(`Error logging in: ${err}`);
+    return res.status(500).json({ error: "Error logging in." });
   }
 });
 

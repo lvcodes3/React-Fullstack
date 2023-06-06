@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 
+type ErrorResponse = {
+  error: string;
+};
+
 const Login = () => {
   let navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
@@ -20,25 +24,19 @@ const Login = () => {
         password,
       };
 
-      const response = await axios.post<string>(
+      const response = await axios.post(
         "http://localhost:5000/auth/login",
         data
       );
-
-      console.log(response);
+      //console.log(response);
 
       // save the JWT in the session storage
-      sessionStorage.setItem("accessToken", response.data);
+      sessionStorage.setItem("jwt", response.data);
 
       // go to home page
       navigate("/");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.log(err);
-
-      type ErrorResponse = {
-        error: string;
-      };
-
       // error is an Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -65,7 +63,7 @@ const Login = () => {
       }
       // unknown error
       else {
-        console.log("Error", err.message);
+        console.log("Error", err);
         alert("An error occurred. Please try again.");
       }
     }
@@ -77,8 +75,11 @@ const Login = () => {
         className="w-3/4 p-6 border-2 border-blue-600 rounded-md"
         onSubmit={formSubmit}
       >
+        <h1 className="text-center block mb-2 font-bold">Login</h1>
         {loginError && (
-          <p className="block mb-2 font-bold text-red-500">{loginError}</p>
+          <p className="text-center block mb-2 font-bold text-red-500">
+            {loginError}
+          </p>
         )}
         <label className="block mb-2 font-bold">Username:</label>
         <input

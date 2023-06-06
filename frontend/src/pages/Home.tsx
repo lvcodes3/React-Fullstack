@@ -1,7 +1,7 @@
 // dependencies
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 type PostObject = {
   id: number;
@@ -12,22 +12,60 @@ type PostObject = {
   updatedAt: string;
 };
 
+type ErrorResponse = {
+  error: string;
+};
+
 const Home = () => {
   let navigate = useNavigate();
   const [posts, setPosts] = useState<PostObject[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getPosts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/posts");
-        if (response.status === 200) {
-          setPosts(response.data);
-        }
-      } catch (err) {
+        const response = await axios.get("http://localhost:5000/posts", {
+          headers: {
+            jwt: sessionStorage.getItem("jwt"),
+          },
+        });
+        //console.log(response);
+        setPosts(response.data);
+      } catch (err: unknown) {
         console.log(err);
+        // Axios Error
+        if (axios.isAxiosError(err)) {
+          const axiosError = err as AxiosError<ErrorResponse>;
+
+          // axios error has a response
+          if (axiosError.response) {
+            const errorResponse = axiosError.response.data as ErrorResponse;
+            if (axiosError.response.status === 403) {
+              alert(errorResponse.error);
+            } else if (axiosError.response.status === 500) {
+              alert(errorResponse.error);
+            }
+          }
+          // axios error has a request
+          else if (axiosError.request) {
+            console.log(axiosError.request);
+            alert(
+              "No response recieved. Please check your internet connection."
+            );
+          }
+          // axios error has a message
+          else {
+            console.log("Error", axiosError.message);
+            alert("An error occurred. Please try again.");
+          }
+        }
+        // Unknown Error
+        else {
+          console.log("Error", err);
+          alert("An error occurred. Please try again.");
+        }
       }
     };
-    fetchData();
+    getPosts();
   }, []);
 
   return (

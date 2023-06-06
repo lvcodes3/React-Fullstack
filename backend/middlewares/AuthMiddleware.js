@@ -1,25 +1,32 @@
-// jwt for authentication
+// jwt for authentication //
 const { verify } = require("jsonwebtoken");
 
-const validateToken = (req, res, next) => {
-  // obtain jwt
-  const accessToken = req.header("accessToken");
+// allow use of env variables //
+require("dotenv").config();
 
-  // check that accessToken exists
-  if (!accessToken)
-    return res.status(401).json({ error: "User is not logged in." });
-
-  // verify accessToken
+const validateJWT = (req, res, next) => {
   try {
-    const validToken = verify(accessToken, "importantsecret");
+    // get the jwt from the header
+    const jwt = req.header("jwt");
 
-    if (validToken) {
+    // check that the jwt exists
+    if (!jwt) {
+      // 403 = Forbidden
+      return res.status(403).json({ error: "Access forbidden." });
+    }
+
+    // verify the jwt
+    const isValidJWT = verify(jwt, process.env.JWT_SECRET);
+
+    if (isValidJWT) {
+      // storing data from jwt: id, username
+      req.user = isValidJWT;
       return next();
     }
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: err });
+    console.log(`Error validating JWT: ${err}`);
+    return res.status(500).json({ error: "Internal Server Error." });
   }
 };
 
-module.exports = { validateToken };
+module.exports = { validateJWT };
