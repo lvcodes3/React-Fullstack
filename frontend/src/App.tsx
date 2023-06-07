@@ -12,21 +12,35 @@ import Register from "./pages/Register";
 import { AuthContext } from "./helpers/AuthContext";
 
 const App = () => {
-  const [authState, setAuthState] = useState<boolean>(false);
+  type AuthStateType = {
+    id: number;
+    username: string;
+    status: boolean;
+  };
+  const initialAuthState: AuthStateType = {
+    id: 0,
+    username: "",
+    status: false,
+  };
+  const [authState, setAuthState] = useState<AuthStateType>(initialAuthState);
 
   useEffect(() => {
     const validateJWT = async () => {
       try {
-        // const response =
-        await axios.get("http://localhost:5000/auth", {
+        const response = await axios.get("http://localhost:5000/auth", {
           headers: {
             jwt: localStorage.getItem("jwt"),
           },
         });
-        //console.log(response);
-        setAuthState(true);
+        console.log(response);
+        setAuthState((prevState) => ({
+          ...prevState,
+          id: response.data.id,
+          username: response.data.username,
+          status: true,
+        }));
       } catch (err: unknown) {
-        console.log(err);
+        //console.log(err);
 
         type ErrorResponse = {
           error: string;
@@ -40,35 +54,46 @@ const App = () => {
           if (axiosError.response) {
             const errorResponse = axiosError.response.data as ErrorResponse;
             if (axiosError.response.status === 403) {
-              alert(errorResponse.error);
-              setAuthState(false);
+              console.log(errorResponse.error);
+              setAuthState((prevState) => ({
+                ...prevState,
+                status: false,
+              }));
             } else if (axiosError.response.status === 500) {
-              alert(errorResponse.error);
-              setAuthState(false);
+              console.log(errorResponse.error);
+              setAuthState((prevState) => ({
+                ...prevState,
+                status: false,
+              }));
             }
           }
           // axios error has a request
           else if (axiosError.request) {
             console.log(axiosError.request);
-            alert(
+            console.log(
               "No response recieved. Please check your internet connection."
             );
           }
           // axios error has a message
           else {
             console.log("Error", axiosError.message);
-            alert("An error occurred. Please try again.");
+            console.log("An error occurred. Please try again.");
           }
         }
         // Unknown Error
         else {
           console.log("Error", err);
-          alert("An error occurred. Please try again.");
+          console.log("An error occurred. Please try again.");
         }
       }
     };
     validateJWT();
   }, []);
+
+  const logout = () => {
+    localStorage.removeItem("jwt");
+    setAuthState(initialAuthState);
+  };
 
   return (
     <div>
@@ -89,7 +114,7 @@ const App = () => {
                 Create a Post
               </Link>
             </div>
-            {!authState ? (
+            {!authState.status ? (
               <div className="flex items-center">
                 <Link
                   to="/login"
@@ -106,8 +131,11 @@ const App = () => {
               </div>
             ) : (
               <div className="flex items-center">
-                <p className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 mx-5 rounded-md text-sm font-medium">
-                  Logout
+                <p
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 mx-5 rounded-md text-sm font-medium cursor-pointer"
+                  onClick={logout}
+                >
+                  {authState.username}, Logout
                 </p>
               </div>
             )}

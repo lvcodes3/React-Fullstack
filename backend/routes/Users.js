@@ -80,8 +80,12 @@ router.post("/login", async (req, res) => {
       process.env.JWT_SECRET
     );
 
-    // return JWT response
-    return res.status(200).json(jwt);
+    // return JWT response with username and id
+    return res.status(200).json({
+      jwt,
+      id: user.id,
+      username: user.username,
+    });
   } catch (err) {
     console.log(`Error logging in: ${err}`);
     return res.status(500).json({ error: "Error logging in." });

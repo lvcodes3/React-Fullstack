@@ -5,10 +5,6 @@ import axios, { AxiosError } from "axios";
 // context
 import { AuthContext } from "../helpers/AuthContext";
 
-type ErrorResponse = {
-  error: string;
-};
-
 const Login = () => {
   const { setAuthState } = useContext(AuthContext);
   let navigate = useNavigate();
@@ -31,15 +27,27 @@ const Login = () => {
         "http://localhost:5000/auth/login",
         data
       );
-      //console.log(response);
+      console.log(response);
 
       // save the JWT in the session storage
-      localStorage.setItem("jwt", response.data);
-      setAuthState(true);
+      localStorage.setItem("jwt", response.data.jwt);
+
+      // set the authState
+      setAuthState({
+        id: response.data.id,
+        username: response.data.username,
+        status: true,
+      });
+
       // go to home page
       navigate("/");
     } catch (err: unknown) {
       console.log(err);
+
+      type ErrorResponse = {
+        error: string;
+      };
+
       // error is an Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
