@@ -1,6 +1,7 @@
 // dependencies
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 // pages
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
@@ -12,6 +13,62 @@ import { AuthContext } from "./helpers/AuthContext";
 
 const App = () => {
   const [authState, setAuthState] = useState<boolean>(false);
+
+  useEffect(() => {
+    const validateJWT = async () => {
+      try {
+        // const response =
+        await axios.get("http://localhost:5000/auth", {
+          headers: {
+            jwt: localStorage.getItem("jwt"),
+          },
+        });
+        //console.log(response);
+        setAuthState(true);
+      } catch (err: unknown) {
+        console.log(err);
+
+        type ErrorResponse = {
+          error: string;
+        };
+
+        // Axios Error
+        if (axios.isAxiosError(err)) {
+          const axiosError = err as AxiosError<ErrorResponse>;
+
+          // axios error has a response
+          if (axiosError.response) {
+            const errorResponse = axiosError.response.data as ErrorResponse;
+            if (axiosError.response.status === 403) {
+              alert(errorResponse.error);
+              setAuthState(false);
+            } else if (axiosError.response.status === 500) {
+              alert(errorResponse.error);
+              setAuthState(false);
+            }
+          }
+          // axios error has a request
+          else if (axiosError.request) {
+            console.log(axiosError.request);
+            alert(
+              "No response recieved. Please check your internet connection."
+            );
+          }
+          // axios error has a message
+          else {
+            console.log("Error", axiosError.message);
+            alert("An error occurred. Please try again.");
+          }
+        }
+        // Unknown Error
+        else {
+          console.log("Error", err);
+          alert("An error occurred. Please try again.");
+        }
+      }
+    };
+    validateJWT();
+  }, []);
 
   return (
     <div>

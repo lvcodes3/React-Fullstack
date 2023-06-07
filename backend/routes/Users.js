@@ -8,6 +8,9 @@ const bcrypt = require("bcrypt");
 // jwt for authentication //
 const { sign } = require("jsonwebtoken");
 
+// middleware to validate the jwt //
+const { validateJWT } = require("../middlewares/AuthMiddleware");
+
 // allow use of env variables //
 require("dotenv").config();
 
@@ -83,6 +86,13 @@ router.post("/login", async (req, res) => {
     console.log(`Error logging in: ${err}`);
     return res.status(500).json({ error: "Error logging in." });
   }
+});
+
+//////////////////////////
+// JWT VALIDATION ROUTE //
+//////////////////////////
+router.get("/", validateJWT, (req, res) => {
+  return res.status(200).json(req.user);
 });
 
 module.exports = router;

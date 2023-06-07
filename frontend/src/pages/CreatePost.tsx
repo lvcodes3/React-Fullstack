@@ -4,10 +4,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik"; // Formik helps with
 import * as Yup from "yup"; // Yup helps with data form validation
 import axios, { AxiosError } from "axios";
 
-type ErrorResponse = {
-  error: string;
-};
-
 const CreatePost = () => {
   let navigate = useNavigate();
 
@@ -15,17 +11,19 @@ const CreatePost = () => {
   const intialValues = {
     title: "",
     text: "",
-    username: "",
+    //username: "",
   };
 
   // using Yup to validate form data
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("The Title is a required field!"),
     text: Yup.string().required("The Post is a required field!"),
+    /*
     username: Yup.string()
       .min(3)
       .max(15)
       .required("The Username is a required field!"),
+    */
   });
 
   // sending validated data to the backend API
@@ -39,6 +37,11 @@ const CreatePost = () => {
       navigate("/");
     } catch (err: unknown) {
       console.log(err);
+
+      type ErrorResponse = {
+        error: string;
+      };
+
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -101,6 +104,7 @@ const CreatePost = () => {
             autoComplete="off"
           />
 
+          {/*
           <label className="block mb-2 font-bold">Username:</label>
           <ErrorMessage
             name="username"
@@ -113,6 +117,7 @@ const CreatePost = () => {
             placeholder="Username"
             autoComplete="off"
           />
+          */}
 
           <button
             type="submit"

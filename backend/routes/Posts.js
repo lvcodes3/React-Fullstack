@@ -51,6 +51,16 @@ router.post("/", validateJWT, async (req, res) => {
     // retrieve data
     const post = req.body;
 
+    // retrieve username from the validateJWT middleware
+    const username = req.user.username;
+    // retrieve id from the validateJWT middleware
+    const id = req.user.id;
+
+    // adding the username to the post obj
+    post.username = username;
+    // adding the id to the post obj
+    post.userId = id;
+
     // let sequelize create the post with the provided data
     await posts.create(post);
 
