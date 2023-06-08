@@ -27,7 +27,7 @@ const Login = () => {
         "http://localhost:5000/auth/login",
         data
       );
-      console.log(response);
+      //console.log(response);
 
       // save the JWT in the session storage
       localStorage.setItem("jwt", response.data.jwt);

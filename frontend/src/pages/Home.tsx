@@ -69,8 +69,11 @@ const Home = () => {
         }
       }
     };
-    getPosts();
-  }, []);
+    // only get posts if logged in
+    if (authState.status) {
+      getPosts();
+    }
+  }, [authState.status]);
 
   return (
     <>
@@ -100,7 +103,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center mt-10">
-          Log in to see Posts!
+          Log in to view Posts!
         </div>
       )}
     </>

@@ -8,9 +8,9 @@ const { comments } = require("../models");
 // middleware to validate the jwt //
 const { validateJWT } = require("../middlewares/AuthMiddleware");
 
-//////////////////////////////////
-// GET COMMENTS BY POSTID ROUTE //
-//////////////////////////////////
+////////////////////////////
+// GET COMMENTS BY POSTID //
+////////////////////////////
 router.get("/:postId", validateJWT, async (req, res) => {
   try {
     // get the passed in postId
@@ -22,16 +22,16 @@ router.get("/:postId", validateJWT, async (req, res) => {
     // return comments
     return res.status(200).json(commentsByPostId);
   } catch (err) {
-    console.log(`Error getting all comments by postId: ${err}`);
+    console.error(`Error getting all comments by postId: ${err}`);
     return res
       .status(500)
       .json({ error: "Error getting all comments by postId." });
   }
 });
 
-//////////////////////////
-// CREATE COMMENT ROUTE //
-//////////////////////////
+////////////////////
+// CREATE COMMENT //
+////////////////////
 router.post("/", validateJWT, async (req, res) => {
   try {
     // retrieve data (passed in as obj)
@@ -49,8 +49,24 @@ router.post("/", validateJWT, async (req, res) => {
     // return the created comment from the db
     return res.status(201).json(createdComment);
   } catch (err) {
-    console.log(`Error creating comment: ${err}`);
+    console.error(`Error creating comment: ${err}`);
     return res.status(500).json({ error: "Error creating comment." });
+  }
+});
+
+////////////////////
+// DELETE COMMENT //
+////////////////////
+router.delete("/:commentId", validateJWT, async (req, res) => {
+  try {
+    const commentId = parseInt(req.params.commentId);
+
+    await comments.destroy({ where: { id: commentId } });
+
+    return res.sendStatus(204);
+  } catch (err) {
+    console.error(`Error deleting comment: ${err}`);
+    return res.status(500).json({ error: "Error deleting comment." });
   }
 });
 

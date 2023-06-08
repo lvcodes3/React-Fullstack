@@ -19,7 +19,7 @@ router.get("/", validateJWT, async (req, res) => {
     //return posts
     return res.status(200).json(listOfPosts);
   } catch (err) {
-    console.log(`Error getting all posts: ${err}`);
+    console.error(`Error getting all posts: ${err}`);
     return res.status(500).json({ error: "Error getting all posts." });
   }
 });
@@ -38,7 +38,7 @@ router.get("/:id", validateJWT, async (req, res) => {
     // return post
     return res.status(200).json(post);
   } catch (err) {
-    console.log(`Error getting post by id: ${err}`);
+    console.error(`Error getting post by id: ${err}`);
     return res.status(500).json({ error: "Error getting post by id." });
   }
 });
@@ -67,7 +67,7 @@ router.post("/", validateJWT, async (req, res) => {
     // return post
     res.status(201).json(post);
   } catch (err) {
-    console.log(`Error creating post: ${err}`);
+    console.error(`Error creating post: ${err}`);
     return res.status(500).json({ error: "Error creating post." });
   }
 });

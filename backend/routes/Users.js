@@ -45,7 +45,7 @@ router.post("/register", async (req, res) => {
     // return response
     return res.status(201).json(newUser);
   } catch (err) {
-    console.log(`Error registering: ${err}`);
+    console.error(`Error registering: ${err}`);
     return res.status(500).json({ error: "Error registering." });
   }
 });
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
       username: user.username,
     });
   } catch (err) {
-    console.log(`Error logging in: ${err}`);
+    console.error(`Error logging in: ${err}`);
     return res.status(500).json({ error: "Error logging in." });
   }
 });
