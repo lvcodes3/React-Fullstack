@@ -18,8 +18,15 @@ require("dotenv").config();
 const { users } = require("../models");
 
 ////////////////////
-// REGISTER ROUTE //
+// JWT VALIDATION //
 ////////////////////
+router.get("/", validateJWT, (req, res) => {
+  return res.status(200).json(req.user);
+});
+
+//////////////
+// REGISTER //
+//////////////
 router.post("/register", async (req, res) => {
   try {
     // retrieve data
@@ -50,9 +57,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
-/////////////////
-// LOGIN ROUTE //
-/////////////////
+///////////
+// LOGIN //
+///////////
 router.post("/login", async (req, res) => {
   try {
     // retrieve data
@@ -90,13 +97,6 @@ router.post("/login", async (req, res) => {
     console.error(`Error logging in: ${err}`);
     return res.status(500).json({ error: "Error logging in." });
   }
-});
-
-//////////////////////////
-// JWT VALIDATION ROUTE //
-//////////////////////////
-router.get("/", validateJWT, (req, res) => {
-  return res.status(200).json(req.user);
 });
 
 module.exports = router;

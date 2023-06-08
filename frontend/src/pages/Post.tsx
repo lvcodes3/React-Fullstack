@@ -299,7 +299,7 @@ const Post = () => {
                     <p className="text-right">
                       - {comment.username}{" "}
                       <button
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded"
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-1 rounded"
                         onClick={() => deleteComment(comment.id)}
                       >
                         Delete

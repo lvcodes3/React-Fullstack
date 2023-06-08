@@ -8,9 +8,9 @@ const { posts } = require("../models");
 // middleware to validate the jwt //
 const { validateJWT } = require("../middlewares/AuthMiddleware");
 
-/////////////////////////
-// GET ALL POSTS ROUTE //
-/////////////////////////
+///////////////////
+// GET ALL POSTS //
+///////////////////
 router.get("/", validateJWT, async (req, res) => {
   try {
     // let sequelize retrieve all posts
@@ -24,9 +24,9 @@ router.get("/", validateJWT, async (req, res) => {
   }
 });
 
-//////////////////////////
-// GET POST BY ID ROUTE //
-/////////////////////////.
+////////////////////
+// GET POST BY ID //
+////////////////////
 router.get("/:id", validateJWT, async (req, res) => {
   try {
     // get the passed in id
@@ -43,9 +43,9 @@ router.get("/:id", validateJWT, async (req, res) => {
   }
 });
 
-///////////////////////
-// CREATE POST ROUTE //
-///////////////////////
+/////////////////
+// CREATE POST //
+/////////////////
 router.post("/", validateJWT, async (req, res) => {
   try {
     // retrieve data
@@ -65,7 +65,7 @@ router.post("/", validateJWT, async (req, res) => {
     await posts.create(post);
 
     // return post
-    res.status(201).json(post);
+    return res.status(201).json(post);
   } catch (err) {
     console.error(`Error creating post: ${err}`);
     return res.status(500).json({ error: "Error creating post." });

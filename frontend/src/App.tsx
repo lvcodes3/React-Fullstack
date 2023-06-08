@@ -131,12 +131,15 @@ const App = () => {
               </div>
             ) : (
               <div className="flex items-center">
-                <p
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 mx-5 rounded-md text-sm font-medium cursor-pointer"
+                <button className="bg-white hover:bg-gray-200 text-black font-bold py-1 px-3 rounded">
+                  {authState.username}
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 mx-5 rounded"
                   onClick={logout}
                 >
-                  {authState.username}, Logout
-                </p>
+                  Logout
+                </button>
               </div>
             )}
           </nav>

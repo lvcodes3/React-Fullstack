@@ -59,7 +59,7 @@ router.post("/", validateJWT, async (req, res) => {
 ////////////////////
 router.delete("/:commentId", validateJWT, async (req, res) => {
   try {
-    const commentId = parseInt(req.params.commentId);
+    const commentId = req.params.commentId;
 
     await comments.destroy({ where: { id: commentId } });
 
