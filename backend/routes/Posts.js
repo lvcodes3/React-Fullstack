@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // get the posts model from sequelize //
-const { posts } = require("../models");
+const { posts, likes } = require("../models");
 
 // middleware to validate the jwt //
 const { validateJWT } = require("../middlewares/AuthMiddleware");
@@ -13,8 +13,12 @@ const { validateJWT } = require("../middlewares/AuthMiddleware");
 ///////////////////
 router.get("/", validateJWT, async (req, res) => {
   try {
-    // let sequelize retrieve all posts
-    const listOfPosts = await posts.findAll();
+    // let sequelize retrieve all posts, including the associated likes data
+    // and sorts the posts in ascending order based on their id
+    const listOfPosts = await posts.findAll({
+      include: [likes],
+      order: [["id", "ASC"]],
+    });
 
     //return posts
     return res.status(200).json(listOfPosts);

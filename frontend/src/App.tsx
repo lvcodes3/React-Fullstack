@@ -10,6 +10,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 // context
 import { AuthContext } from "./helpers/AuthContext";
+// react-icons
+import { FaUser } from "react-icons/fa";
+import { FaPowerOff } from "react-icons/fa";
 
 const App = () => {
   type AuthStateType = {
@@ -32,7 +35,7 @@ const App = () => {
             jwt: localStorage.getItem("jwt"),
           },
         });
-        console.log(response);
+        //console.log(response);
         setAuthState((prevState) => ({
           ...prevState,
           id: response.data.id,
@@ -131,14 +134,16 @@ const App = () => {
               </div>
             ) : (
               <div className="flex items-center">
-                <button className="bg-white hover:bg-gray-200 text-black font-bold py-1 px-3 rounded">
+                <button className="flex items-center bg-white hover:bg-gray-200 text-black font-bold py-1 px-3 rounded">
                   {authState.username}
+                  <FaUser className="ml-1" />
                 </button>
                 <button
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 mx-5 rounded"
+                  className="flex items-center bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 mx-5 rounded"
                   onClick={logout}
                 >
                   Logout
+                  <FaPowerOff className="ml-1" />
                 </button>
               </div>
             )}
