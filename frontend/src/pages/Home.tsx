@@ -17,6 +17,14 @@ type PostObject = {
   likes: Array<{}>;
 };
 
+type LikedPostObject = {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  postId: number;
+  userId: number;
+};
+
 type ErrorResponse = {
   error: string;
 };
@@ -25,6 +33,7 @@ const Home = () => {
   const { authState } = useContext(AuthContext);
   let navigate = useNavigate();
   const [posts, setPosts] = useState<PostObject[]>([]);
+  const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
   useEffect(() => {
     const getPosts = async () => {
@@ -35,7 +44,12 @@ const Home = () => {
           },
         });
         //console.log(response);
-        setPosts(response.data);
+        setPosts(response.data.listOfPosts);
+        setLikedPosts(
+          response.data.likedPosts.map((like: LikedPostObject) => {
+            return like.postId;
+          })
+        );
       } catch (err: unknown) {
         //console.log(err);
 
@@ -103,6 +117,16 @@ const Home = () => {
         }
         setPosts(updatedPosts);
       }
+      // update likes
+      if (likedPosts.includes(postId)) {
+        setLikedPosts(
+          likedPosts.filter((id) => {
+            return id !== postId;
+          })
+        );
+      } else {
+        setLikedPosts([...likedPosts, postId]);
+      }
     } catch (err: unknown) {
       //console.log(err);
 
@@ -148,13 +172,13 @@ const Home = () => {
             return (
               <div
                 key={post.id}
-                className="w-3/4 h-80 cursor-pointer border-2 border-blue-600 rounded-md mb-10"
+                className="w-3/4 h-80 border-2 border-blue-600 rounded-md mb-10"
               >
                 <div className="flex items-center justify-center h-1/4 bg-blue-600">
                   <p className="text-center text-white">{post.title}</p>
                 </div>
                 <div
-                  className="flex items-center justify-center h-2/4"
+                  className="flex items-center justify-center h-2/4 cursor-pointer"
                   onClick={() => {
                     navigate(`/post/${post.id}`);
                   }}
@@ -168,11 +192,15 @@ const Home = () => {
                       className="bg-white hover:bg-gray-200 font-bold py-1 px-2 mr-1 rounded"
                       onClick={() => likePost(post.id)}
                     >
-                      <FaThumbsUp />
+                      <FaThumbsUp
+                        className={
+                          likedPosts.includes(post.id)
+                            ? "text-blue-500"
+                            : "text-gray-500"
+                        }
+                      />
                     </button>
-                    <label className="text-white mr-5">
-                      {post.likes.length}
-                    </label>
+                    <p className="text-white mr-5">{post.likes.length}</p>
                   </div>
                 </div>
               </div>

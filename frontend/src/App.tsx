@@ -8,6 +8,8 @@ import CreatePost from "./pages/CreatePost";
 import Post from "./pages/Post";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 // context
 import { AuthContext } from "./helpers/AuthContext";
 // react-icons
@@ -134,10 +136,13 @@ const App = () => {
               </div>
             ) : (
               <div className="flex items-center">
-                <button className="flex items-center bg-white hover:bg-gray-200 text-black font-bold py-1 px-3 rounded">
+                <Link
+                  to="/profile"
+                  className="flex items-center bg-white hover:bg-gray-200 text-black font-bold py-1 px-3 rounded"
+                >
                   {authState.username}
                   <FaUser className="ml-1" />
-                </button>
+                </Link>
                 <button
                   className="flex items-center bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 mx-5 rounded"
                   onClick={logout}
@@ -154,6 +159,8 @@ const App = () => {
             <Route path="/post/:id" element={<Post />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </AuthContext.Provider>

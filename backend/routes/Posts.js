@@ -20,8 +20,15 @@ router.get("/", validateJWT, async (req, res) => {
       order: [["id", "ASC"]],
     });
 
-    //return posts
-    return res.status(200).json(listOfPosts);
+    // let sequelize retrive all the likes made by the current logged in user
+    const likedPosts = await likes.findAll({
+      where: { userId: req.user.id },
+    });
+
+    return res.status(200).json({
+      listOfPosts: listOfPosts,
+      likedPosts: likedPosts,
+    });
   } catch (err) {
     console.error(`Error getting all posts: ${err}`);
     return res.status(500).json({ error: "Error getting all posts." });
