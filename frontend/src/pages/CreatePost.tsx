@@ -81,26 +81,32 @@ const CreatePost = () => {
             onSubmit={formSubmit}
           >
             <Form className="w-3/4 p-6 border-2 border-blue-600 rounded-md">
-              <label className="block mb-2 font-bold">Title:</label>
+              <label htmlFor="titleInput" className="block mb-2 font-bold">
+                Title:
+              </label>
               <ErrorMessage
                 name="title"
                 className="text-red-500"
                 component="span"
               />
               <Field
+                id="titleInput"
                 name="title"
                 className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
                 placeholder="Title"
                 autoComplete="off"
               />
 
-              <label className="block mb-2 font-bold">Post:</label>
+              <label htmlFor="textInput" className="block mb-2 font-bold">
+                Post:
+              </label>
               <ErrorMessage
                 name="text"
                 className="text-red-500"
                 component="span"
               />
               <Field
+                id="textInput"
                 name="text"
                 className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
                 placeholder="Post"

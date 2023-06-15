@@ -88,26 +88,32 @@ const Register = () => {
               {registerError}
             </p>
           )}
-          <label className="block mb-2 font-bold">Username:</label>
+          <label htmlFor="usernameInput" className="block mb-2 font-bold">
+            Username:
+          </label>
           <ErrorMessage
             name="username"
             className="text-red-500"
             component="span"
           />
           <Field
+            id="usernameInput"
             name="username"
             className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
             placeholder="Username"
             autoComplete="off"
           />
 
-          <label className="block mb-2 font-bold">Password:</label>
+          <label htmlFor="passwordInput" className="block mb-2 font-bold">
+            Password:
+          </label>
           <ErrorMessage
             name="password"
             className="text-red-500"
             component="span"
           />
           <Field
+            id="passwordInput"
             type="password"
             name="password"
             className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"

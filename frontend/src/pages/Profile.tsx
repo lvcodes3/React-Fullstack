@@ -8,9 +8,17 @@ const Profile = () => {
   console.log(authState);
 
   return (
-    <div className="mt-10">
-      <h1 className="text-center">Welcome, {authState.username}!</h1>
-    </div>
+    <>
+      {authState.status ? (
+        <div className="mt-10">
+          <h1 className="text-center">Welcome, {authState.username}!</h1>
+        </div>
+      ) : (
+        <div className="mt-10">
+          <h1 className="text-center">Log in to view profile!</h1>
+        </div>
+      )}
+    </>
   );
 };
 export default Profile;

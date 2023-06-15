@@ -272,6 +272,7 @@ const Post = () => {
           <div className="w-2/4 px-10">
             <div className="flex flex-col pb-5">
               <input
+                id="commentInput"
                 className="h-12 border-2 border-blue-600 rounded-md"
                 type="text"
                 value={newComment}

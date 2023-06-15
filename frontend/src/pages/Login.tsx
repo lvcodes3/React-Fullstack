@@ -92,8 +92,11 @@ const Login = () => {
             {loginError}
           </p>
         )}
-        <label className="block mb-2 font-bold">Username:</label>
+        <label htmlFor="usernameInput" className="block mb-2 font-bold">
+          Username:
+        </label>
         <input
+          id="usernameInput"
           name="username"
           className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
           placeholder="Username"
@@ -104,8 +107,11 @@ const Login = () => {
           required
         />
 
-        <label className="block mb-2 font-bold">Password:</label>
+        <label htmlFor="passwordInput" className="block mb-2 font-bold">
+          Password:
+        </label>
         <input
+          id="passwordInput"
           type="password"
           name="password"
           className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
