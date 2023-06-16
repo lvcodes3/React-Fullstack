@@ -83,4 +83,20 @@ router.post("/", validateJWT, async (req, res) => {
   }
 });
 
+/////////////////
+// DELETE POST //
+/////////////////
+router.delete("/:postId", validateJWT, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    await posts.destroy({ where: { id: postId } });
+
+    return res.sendStatus(204);
+  } catch (err) {
+    console.error(`Error deleting post: ${err}`);
+    return res.status(500).json({ error: "Error deleting post." });
+  }
+});
+
 module.exports = router;

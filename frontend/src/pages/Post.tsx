@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 // context
 import { AuthContext } from "../helpers/AuthContext";
+// react-icons
+import { FaTrashAlt } from "react-icons/fa";
 
 type PostObject = {
   id: number;
@@ -296,16 +298,22 @@ const Post = () => {
                     key={comment.id}
                     className="border-2 border-blue-600 rounded-md p-5 mb-5"
                   >
-                    <p className="text-right">{comment.comment}</p>
-                    <p className="text-right">
-                      - {comment.username}{" "}
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-1 rounded"
-                        onClick={() => deleteComment(comment.id)}
-                      >
-                        Delete
-                      </button>
-                    </p>
+                    <div className="flex">
+                      <div>
+                        <button
+                          className="border-2 border-blue-600  bg-white hover:bg-gray-200 py-1 px-1 rounded"
+                          onClick={() => deleteComment(comment.id)}
+                        >
+                          <FaTrashAlt className="text-red-500" />
+                        </button>
+                      </div>
+                      <div className="flex-grow overflow-hidden">
+                        <p className="text-right whitespace-normal">
+                          {comment.comment}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-right">- {comment.username}</p>
                   </div>
                 ) : (
                   <div

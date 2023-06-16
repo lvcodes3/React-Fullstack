@@ -5,7 +5,7 @@ import axios, { AxiosError } from "axios";
 // context
 import { AuthContext } from "../helpers/AuthContext";
 // react-icons
-import { FaThumbsUp } from "react-icons/fa";
+import { FaThumbsUp, FaTrashAlt } from "react-icons/fa";
 
 type PostObject = {
   id: number;
@@ -164,8 +164,60 @@ const Home = () => {
     }
   };
 
+  const deletePost = async (postId: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/posts/${postId}`,
+        {
+          headers: {
+            jwt: localStorage.getItem("jwt"),
+          },
+        }
+      );
+      if (response.status === 204) {
+        // filter out the deleted post
+        setPosts(
+          posts.filter((post) => {
+            return post.id !== postId;
+          })
+        );
+      }
+    } catch (err: unknown) {
+      //console.log(err);
+
+      // Axios Error
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<ErrorResponse>;
+
+        // axios error has a response
+        if (axiosError.response) {
+          const errorResponse = axiosError.response.data as ErrorResponse;
+          console.log(errorResponse.error);
+        }
+        // axios error has a request
+        else if (axiosError.request) {
+          console.log(axiosError.request);
+          console.log(
+            "No response recieved. Please check your internet connection."
+          );
+        }
+        // axios error has a message
+        else {
+          console.log("Error", axiosError.message);
+          console.log("An error occurred. Please try again.");
+        }
+      }
+      // Unknown Error
+      else {
+        console.log("Error", err);
+        console.log("An error occurred. Please try again.");
+      }
+    }
+  };
+
   return (
     <>
+      {/* CONDITIONALLY RENDERING LIST OF POSTS OR NOT AUTHORIZED SCREEN */}
       {authState.status ? (
         <div className="flex flex-col items-center mt-10">
           {posts.map((post) => {
@@ -188,10 +240,20 @@ const Home = () => {
                 <div className="flex justify-between items-center h-1/4 bg-blue-600">
                   <p className="text-white ml-5">- {post.username}</p>
                   <div className="flex">
+                    {/* CONDITIONALLY RENDERING DELETE POST BUTTON */}
+                    {authState.username === post.username && (
+                      <button
+                        className="bg-white hover:bg-gray-200 py-1 px-2 mr-1 rounded"
+                        onClick={() => deletePost(post.id)}
+                      >
+                        <FaTrashAlt className="text-red-500" />
+                      </button>
+                    )}
                     <button
-                      className="bg-white hover:bg-gray-200 font-bold py-1 px-2 mr-1 rounded"
+                      className="bg-white hover:bg-gray-200 py-1 px-2 mr-1 rounded"
                       onClick={() => likePost(post.id)}
                     >
+                      {/* CONDITIONALLY RENDERING BLUE LIKE BTN IF LIKED, GREY IF NOT LIKED */}
                       <FaThumbsUp
                         className={
                           likedPosts.includes(post.id)
