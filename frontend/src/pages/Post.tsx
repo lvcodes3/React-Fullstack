@@ -39,11 +39,14 @@ const Post = () => {
   useEffect(() => {
     const getPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/posts/${id}`, {
-          headers: {
-            jwt: localStorage.getItem("jwt"),
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/posts/byId/${id}`,
+          {
+            headers: {
+              jwt: localStorage.getItem("jwt"),
+            },
+          }
+        );
         //console.log("GET POST RESPONSE:");
         //console.log(response);
         setPost(response.data);

@@ -5,7 +5,7 @@ import axios, { AxiosError } from "axios";
 // context
 import { AuthContext } from "../helpers/AuthContext";
 // react-icons
-import { FaThumbsUp, FaTrashAlt } from "react-icons/fa";
+import { FaUser, FaThumbsUp, FaTrashAlt } from "react-icons/fa";
 
 type PostObject = {
   id: number;
@@ -14,6 +14,7 @@ type PostObject = {
   username: string;
   createdAt: string;
   updatedAt: string;
+  userId: number;
   likes: Array<{}>;
 };
 
@@ -238,7 +239,15 @@ const Home = () => {
                   <p className="text-center">{post.text}</p>
                 </div>
                 <div className="flex justify-between items-center h-1/4 bg-blue-600">
-                  <p className="text-white ml-5">- {post.username}</p>
+                  <button
+                    className="flex items-center bg-white hover:bg-gray-200 text-black font-bold py-1 px-2 rounded ml-5"
+                    onClick={() => {
+                      navigate(`/profile/${post.userId}`);
+                    }}
+                  >
+                    {post.username}
+                    <FaUser className="ml-1" />
+                  </button>
                   <div className="flex">
                     {/* CONDITIONALLY RENDERING DELETE POST BUTTON */}
                     {authState.username === post.username && (
