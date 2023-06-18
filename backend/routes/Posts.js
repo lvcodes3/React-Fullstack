@@ -38,7 +38,7 @@ router.get("/", validateJWT, async (req, res) => {
 ////////////////////
 // GET POST BY ID //
 ////////////////////
-router.get("/:id", validateJWT, async (req, res) => {
+router.get("/byId/:id", validateJWT, async (req, res) => {
   try {
     // get the passed in id
     const id = req.params.id;
@@ -51,6 +51,25 @@ router.get("/:id", validateJWT, async (req, res) => {
   } catch (err) {
     console.error(`Error getting post by id: ${err}`);
     return res.status(500).json({ error: "Error getting post by id." });
+  }
+});
+
+/////////////////////////
+// GET POSTS BY USERID //
+/////////////////////////
+router.get("/byUserId/:id", validateJWT, async (req, res) => {
+  try {
+    // get the passed in id
+    const userId = req.params.id;
+
+    // let sequelize retrieve the post by userId
+    const listOfPosts = await posts.findAll({ where: { userId: userId } });
+
+    // return post
+    return res.status(200).json(listOfPosts);
+  } catch (err) {
+    console.error(`Error getting post by userId: ${err}`);
+    return res.status(500).json({ error: "Error getting post by userId." });
   }
 });
 

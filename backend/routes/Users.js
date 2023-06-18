@@ -99,4 +99,22 @@ router.post("/login", async (req, res) => {
   }
 });
 
+///////////////
+// USER INFO //
+///////////////
+router.get("/info/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const userInfo = await users.findByPk(id, {
+      attributes: { exclude: ["password"] },
+    });
+
+    return res.status(200).json(userInfo);
+  } catch (err) {
+    console.error(`Error getting info: ${err}`);
+    return res.status(500).json({ error: "Error getting info." });
+  }
+});
+
 module.exports = router;
