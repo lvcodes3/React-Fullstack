@@ -110,7 +110,11 @@ router.get("/info/:id", async (req, res) => {
       attributes: { exclude: ["password"] },
     });
 
-    return res.status(200).json(userInfo);
+    if (!userInfo) {
+      return res.sendStatus(404);
+    } else {
+      return res.status(200).json(userInfo);
+    }
   } catch (err) {
     console.error(`Error getting info: ${err}`);
     return res.status(500).json({ error: "Error getting info." });

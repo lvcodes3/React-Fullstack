@@ -43,11 +43,22 @@ router.get("/byId/:id", validateJWT, async (req, res) => {
     // get the passed in id
     const id = req.params.id;
 
-    // let sequelize retrieve the post by id
-    const post = await posts.findByPk(id);
+    // let sequelize retrieve post owned by id including the associated likes data
+    // and sorts the posts in ascending order based on their id
+    const post = await posts.findByPk(id, {
+      include: [likes],
+    });
 
-    // return post
-    return res.status(200).json(post);
+    // let sequelize retrive all the likes made by the current logged in user
+    const likedPosts = await likes.findAll({
+      where: { userId: req.user.id },
+    });
+
+    // return post and likes
+    return res.status(200).json({
+      post: post,
+      likedPosts: likedPosts,
+    });
   } catch (err) {
     console.error(`Error getting post by id: ${err}`);
     return res.status(500).json({ error: "Error getting post by id." });
@@ -62,11 +73,24 @@ router.get("/byUserId/:id", validateJWT, async (req, res) => {
     // get the passed in id
     const userId = req.params.id;
 
-    // let sequelize retrieve the post by userId
-    const listOfPosts = await posts.findAll({ where: { userId: userId } });
+    // let sequelize retrieve all posts owned by userId, including the associated likes data
+    // and sorts the posts in ascending order based on their id
+    const listOfPosts = await posts.findAll({
+      where: { userId: userId },
+      include: [likes],
+      order: [["id", "ASC"]],
+    });
 
-    // return post
-    return res.status(200).json(listOfPosts);
+    // let sequelize retrive all the likes made by the current logged in user
+    const likedPosts = await likes.findAll({
+      where: { userId: req.user.id },
+    });
+
+    // return posts and likes
+    return res.status(200).json({
+      listOfPosts: listOfPosts,
+      likedPosts: likedPosts,
+    });
   } catch (err) {
     console.error(`Error getting post by userId: ${err}`);
     return res.status(500).json({ error: "Error getting post by userId." });
