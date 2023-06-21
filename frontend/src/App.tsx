@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 // pages
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
+import Users from "./pages/Users";
 import Post from "./pages/Post";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -112,13 +113,19 @@ const App = () => {
                 to="/"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 mx-5 rounded-md text-sm font-medium"
               >
-                Home Page
+                Social Posts
               </Link>
               <Link
                 to="/createPost"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 mx-5 rounded-md text-sm font-medium"
               >
                 Create a Post
+              </Link>
+              <Link
+                to="/users"
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 mx-5 rounded-md text-sm font-medium"
+              >
+                Users
               </Link>
             </div>
             {!authState.status ? (
@@ -158,6 +165,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/createPost" element={<CreatePost />} />
+            <Route path="/users" element={<Users />} />
             <Route path="/post/:id" element={<Post />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

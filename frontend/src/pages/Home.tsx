@@ -52,8 +52,6 @@ const Home = () => {
           })
         );
       } catch (err: unknown) {
-        //console.log(err);
-
         // Axios Error
         if (axios.isAxiosError(err)) {
           const axiosError = err as AxiosError<ErrorResponse>;
