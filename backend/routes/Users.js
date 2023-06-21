@@ -17,6 +17,9 @@ require("dotenv").config();
 // get the users model from sequelize //
 const { users } = require("../models");
 
+// Op object from sequelize, provides the operators used in queries //
+const { Op } = require("sequelize");
+
 ////////////////////
 // JWT VALIDATION //
 ////////////////////
@@ -116,8 +119,32 @@ router.get("/info/:id", async (req, res) => {
       return res.status(200).json(userInfo);
     }
   } catch (err) {
-    console.error(`Error getting info: ${err}`);
-    return res.status(500).json({ error: "Error getting info." });
+    console.error(`Error getting user info: ${err}`);
+    return res.status(500).json({ error: "Error getting user info." });
+  }
+});
+
+////////////////
+// USERS INFO //
+////////////////
+router.get("/users", validateJWT, async (req, res) => {
+  try {
+    const usersInfo = await users.findAll({
+      where: {
+        id: {
+          [Op.not]: req.user.id,
+        },
+      },
+      attributes: { exclude: ["password"] },
+    });
+    if (!usersInfo) {
+      return res.sendStatus(404);
+    } else {
+      return res.status(200).json(usersInfo);
+    }
+  } catch (err) {
+    console.error(`Error getting users info: ${err}`);
+    return res.status(500).json({ error: "Error getting users info." });
   }
 });
 
