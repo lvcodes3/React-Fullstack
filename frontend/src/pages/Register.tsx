@@ -5,10 +5,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik"; // Formik helps with
 import * as Yup from "yup"; // Yup helps with data form validation
 import axios, { AxiosError } from "axios";
 
-type ErrorResponse = {
-  error: string;
-};
-
 const Register = () => {
   let navigate = useNavigate();
   const [registerError, setRegisterError] = useState<string>("");
@@ -17,6 +13,7 @@ const Register = () => {
   const intialValues = {
     username: "",
     password: "",
+    passwordConfirmation: "",
   };
 
   // using Yup to validate form data
@@ -24,11 +21,14 @@ const Register = () => {
     username: Yup.string()
       .min(3)
       .max(15)
-      .required("The Username is a required field!"),
+      .required("The Username Input is a required field!"),
     password: Yup.string()
       .min(4)
       .max(20)
-      .required("The Password is a required field!"),
+      .required("The Password Input is a required field!"),
+    passwordConfirmation: Yup.string()
+      .oneOf([Yup.ref("password")], "Passwords must match!")
+      .required("The Password Confirmation Input is a required field!"),
   });
 
   // sending validated data to the backend API
@@ -41,7 +41,10 @@ const Register = () => {
       // go to login page
       navigate("/login");
     } catch (err: unknown) {
-      console.log(err);
+      type ErrorResponse = {
+        error: string;
+      };
+
       // error is an Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -116,6 +119,26 @@ const Register = () => {
             id="passwordInput"
             type="password"
             name="password"
+            className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
+            placeholder="Password"
+            autoComplete="off"
+          />
+
+          <label
+            htmlFor="passwordConfirmationInput"
+            className="block mb-2 font-bold"
+          >
+            Password Confirmation:
+          </label>
+          <ErrorMessage
+            name="passwordConfirmation"
+            className="text-red-500"
+            component="span"
+          />
+          <Field
+            id="passwordConfirmationInput"
+            type="password"
+            name="passwordConfirmation"
             className="w-full p-2 mb-4 border-2 border-blue-600 rounded-md"
             placeholder="Password"
             autoComplete="off"

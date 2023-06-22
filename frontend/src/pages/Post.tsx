@@ -89,7 +89,6 @@ const Post = () => {
 
         setIsLoading(false);
       } catch (err: unknown) {
-        console.log(err);
         // Axios Error
         if (axios.isAxiosError(err)) {
           const axiosError = err as AxiosError<ErrorResponse>;
@@ -123,8 +122,10 @@ const Post = () => {
         }
       }
     };
-    fetchData();
-  }, [id]);
+    if (authState.status) {
+      fetchData();
+    }
+  }, [authState.status, id]);
 
   const likePost = async (postId: number) => {
     try {
@@ -161,8 +162,6 @@ const Post = () => {
         setLikedPosts([...likedPosts, postId]);
       }
     } catch (err: unknown) {
-      //console.log(err);
-
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -214,8 +213,6 @@ const Post = () => {
         navigate(`/`);
       }
     } catch (err: unknown) {
-      //console.log(err);
-
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -278,7 +275,6 @@ const Post = () => {
       // reset the comment field
       setNewComment("");
     } catch (err: unknown) {
-      console.log(err);
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -332,7 +328,6 @@ const Post = () => {
         );
       }
     } catch (err) {
-      console.log(err);
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;

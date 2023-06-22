@@ -127,8 +127,6 @@ const Home = () => {
         setLikedPosts([...likedPosts, postId]);
       }
     } catch (err: unknown) {
-      //console.log(err);
-
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -182,8 +180,6 @@ const Home = () => {
         );
       }
     } catch (err: unknown) {
-      //console.log(err);
-
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;

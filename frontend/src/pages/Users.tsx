@@ -14,10 +14,6 @@ type UsersObject = {
   updatedAt: string;
 };
 
-type ErrorResponse = {
-  error: string;
-};
-
 const Users = () => {
   const { authState } = useContext(AuthContext);
 
@@ -38,6 +34,10 @@ const Users = () => {
           setUsers(response.data);
         }
       } catch (err: unknown) {
+        type ErrorResponse = {
+          error: string;
+        };
+
         // Axios Error
         if (axios.isAxiosError(err)) {
           const axiosError = err as AxiosError<ErrorResponse>;

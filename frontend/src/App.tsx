@@ -46,8 +46,6 @@ const App = () => {
           status: true,
         }));
       } catch (err: unknown) {
-        //console.log(err);
-
         type ErrorResponse = {
           error: string;
         };

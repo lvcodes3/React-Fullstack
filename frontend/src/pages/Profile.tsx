@@ -43,17 +43,38 @@ const Profile = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
 
   useEffect(() => {
-    const getUserInfo = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
+        const getUserInfoResponse = await axios.get(
           `http://localhost:5000/auth/info/${id}`
         );
-        //console.log(response);
-        if (response.status === 200) {
-          setUsername(response.data.username);
+        // console.log(getUserInfoResponse);
+
+        const getUserPostsResponse = await axios.get(
+          `http://localhost:5000/posts/byUserId/${id}`,
+          {
+            headers: {
+              jwt: localStorage.getItem("jwt"),
+            },
+          }
+        );
+        // console.log(getUserPostsResponse);
+
+        if (getUserInfoResponse.status === 200) {
+          setUsername(getUserInfoResponse.data.username);
+        }
+
+        if (getUserPostsResponse.status === 200) {
+          setPosts(getUserPostsResponse.data.listOfPosts);
+          setLikedPosts(
+            getUserPostsResponse.data.likedPosts.map(
+              (like: LikedPostObject) => {
+                return like.postId;
+              }
+            )
+          );
         }
       } catch (err: unknown) {
-        //console.log(err);
         // Axios Error
         if (axios.isAxiosError(err)) {
           const axiosError = err as AxiosError<ErrorResponse>;
@@ -87,59 +108,10 @@ const Profile = () => {
         }
       }
     };
-    const getUserPosts = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/posts/byUserId/${id}`,
-          {
-            headers: {
-              jwt: localStorage.getItem("jwt"),
-            },
-          }
-        );
-        //console.log(response);
-        if (response.status === 200) {
-          setPosts(response.data.listOfPosts);
-          setLikedPosts(
-            response.data.likedPosts.map((like: LikedPostObject) => {
-              return like.postId;
-            })
-          );
-        }
-      } catch (err: unknown) {
-        console.log(err);
-        // Axios Error
-        if (axios.isAxiosError(err)) {
-          const axiosError = err as AxiosError<ErrorResponse>;
-
-          // axios error has a response
-          if (axiosError.response) {
-            const errorResponse = axiosError.response.data as ErrorResponse;
-            console.log(errorResponse.error);
-          }
-          // axios error has a request
-          else if (axiosError.request) {
-            console.log(axiosError.request);
-            alert(
-              "No response recieved. Please check your internet connection."
-            );
-          }
-          // axios error has a message
-          else {
-            console.log("Error", axiosError.message);
-            alert("An error occurred. Please try again.");
-          }
-        }
-        // Unknown Error
-        else {
-          console.log("Error", err);
-          alert("An error occurred. Please try again.");
-        }
-      }
-    };
-    getUserInfo();
-    getUserPosts();
-  }, [id, navigate]);
+    if (authState.status) {
+      fetchData();
+    }
+  }, [id, authState.status, navigate]);
 
   const likePost = async (postId: number) => {
     try {
@@ -177,8 +149,6 @@ const Profile = () => {
         setLikedPosts([...likedPosts, postId]);
       }
     } catch (err: unknown) {
-      //console.log(err);
-
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;
@@ -223,6 +193,7 @@ const Profile = () => {
           },
         }
       );
+      //console.log(response);
       if (response.status === 204) {
         // filter out the deleted post
         setPosts(
@@ -232,8 +203,6 @@ const Profile = () => {
         );
       }
     } catch (err: unknown) {
-      //console.log(err);
-
       // Axios Error
       if (axios.isAxiosError(err)) {
         const axiosError = err as AxiosError<ErrorResponse>;

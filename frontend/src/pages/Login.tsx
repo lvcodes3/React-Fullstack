@@ -42,8 +42,6 @@ const Login = () => {
       // go to home page
       navigate("/");
     } catch (err: unknown) {
-      console.log(err);
-
       type ErrorResponse = {
         error: string;
       };

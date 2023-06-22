@@ -33,8 +33,6 @@ const CreatePost = () => {
       });
       navigate("/");
     } catch (err: unknown) {
-      console.log(err);
-
       type ErrorResponse = {
         error: string;
       };
