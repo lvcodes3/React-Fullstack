@@ -5,7 +5,7 @@ import axios, { AxiosError } from "axios";
 // context
 import { AuthContext } from "../helpers/AuthContext";
 // react-icons
-import { FaUser, FaThumbsUp, FaTrashAlt } from "react-icons/fa";
+import { FaUser, FaThumbsUp, FaTrashAlt, FaComment } from "react-icons/fa";
 
 type PostObject = {
   id: number;
@@ -64,6 +64,7 @@ const Post = () => {
             },
           }
         );
+        // console.log(getPostResponse);
 
         const getCommentsResponse = await axios.get(
           `http://localhost:5000/comments/${id}`,
@@ -73,6 +74,7 @@ const Post = () => {
             },
           }
         );
+        // console.log(getCommentsResponse);
 
         if (getPostResponse.status === 200) {
           setPost(getPostResponse.data.post);
@@ -389,29 +391,41 @@ const Post = () => {
                   <FaUser className="ml-1" />
                 </button>
                 <div className="flex">
+                  <div className="flex mr-5">
+                    <button
+                      className="bg-white hover:bg-gray-200 py-1 px-2 rounded"
+                      onClick={() => likePost(post.id)}
+                    >
+                      {/* CONDITIONALLY RENDERING BLUE LIKE BTN IF LIKED, GREY IF NOT LIKED */}
+                      <FaThumbsUp
+                        className={
+                          likedPosts.includes(post.id)
+                            ? "text-blue-500"
+                            : "text-gray-500"
+                        }
+                      />
+                    </button>
+                    <p className="text-white ml-2">{post.likes.length}</p>
+                  </div>
+
+                  <div className="flex mr-5">
+                    <div className="bg-white py-1 px-2 rounded">
+                      <FaComment />
+                    </div>
+                    <p className="text-white ml-2">{comments.length}</p>
+                  </div>
+
                   {/* CONDITIONALLY RENDERING DELETE POST BUTTON */}
                   {authState.username === post.username && (
-                    <button
-                      className="bg-white hover:bg-gray-200 py-1 px-2 mr-1 rounded"
-                      onClick={() => deletePost(post.id)}
-                    >
-                      <FaTrashAlt className="text-red-500" />
-                    </button>
+                    <div className="flex mr-5">
+                      <button
+                        className="bg-white hover:bg-gray-200 py-1 px-2 rounded"
+                        onClick={() => deletePost(post.id)}
+                      >
+                        <FaTrashAlt className="text-red-500" />
+                      </button>
+                    </div>
                   )}
-                  <button
-                    className="bg-white hover:bg-gray-200 py-1 px-2 mr-1 rounded"
-                    onClick={() => likePost(post.id)}
-                  >
-                    {/* CONDITIONALLY RENDERING BLUE LIKE BTN IF LIKED, GREY IF NOT LIKED */}
-                    <FaThumbsUp
-                      className={
-                        likedPosts.includes(post.id)
-                          ? "text-blue-500"
-                          : "text-gray-500"
-                      }
-                    />
-                  </button>
-                  <p className="text-white mr-5">{post.likes.length}</p>
                 </div>
               </div>
             </div>
