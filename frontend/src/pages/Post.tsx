@@ -372,8 +372,8 @@ const Post = () => {
             <h1 className="text-center text-2xl font-bold">Loading...</h1>
           </div>
         ) : (
-          <div className="flex mt-10">
-            <div className="w-2/4 h-80 border-2 border-blue-600 rounded-md ml-10">
+          <div className="flex mt-10 flex-col items-center md:flex-row md:items-start">
+            <div className="w-4/4 md:w-2/4 h-80 border-2 border-blue-600 rounded-md md:ml-10">
               <div className="flex items-center justify-center h-1/4 bg-blue-600">
                 <p className="text-center text-white">{post.title}</p>
               </div>
@@ -391,6 +391,12 @@ const Post = () => {
                   <FaUser className="ml-1" />
                 </button>
                 <div className="flex">
+                  <div className="mr-5">
+                    <p className="text-white">
+                      {new Date(post.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+
                   <div className="flex mr-5">
                     <button
                       className="bg-white hover:bg-gray-200 py-1 px-2 rounded"
@@ -430,7 +436,7 @@ const Post = () => {
               </div>
             </div>
 
-            <div className="w-2/4 px-10">
+            <div className="w-4/4 mt-10 md:w-2/4 md:mt-0 md:px-10">
               <div className="flex flex-col pb-5">
                 <input
                   id="commentInput"

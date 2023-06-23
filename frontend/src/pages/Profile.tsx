@@ -295,6 +295,12 @@ const Profile = () => {
                           <FaUser className="ml-1" />
                         </button>
                         <div className="flex">
+                          <div className="mr-5">
+                            <p className="text-white">
+                              {new Date(post.createdAt).toLocaleString()}
+                            </p>
+                          </div>
+
                           <div className="flex mr-5">
                             <button
                               className="bg-white hover:bg-gray-200 py-1 px-2 rounded"
