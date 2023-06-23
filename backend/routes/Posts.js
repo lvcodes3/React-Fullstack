@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // get the posts model from sequelize //
-const { posts, likes } = require("../models");
+const { posts, likes, comments } = require("../models");
 
 // middleware to validate the jwt //
 const { validateJWT } = require("../middlewares/AuthMiddleware");
@@ -13,10 +13,10 @@ const { validateJWT } = require("../middlewares/AuthMiddleware");
 ///////////////////
 router.get("/", validateJWT, async (req, res) => {
   try {
-    // let sequelize retrieve all posts, including the associated likes data
+    // let sequelize retrieve all posts, including the associated likes and comments
     // and sorts the posts in ascending order based on their id
     const listOfPosts = await posts.findAll({
-      include: [likes],
+      include: [likes, comments],
       order: [["id", "ASC"]],
     });
 
@@ -43,7 +43,7 @@ router.get("/byId/:id", validateJWT, async (req, res) => {
     // get the passed in id
     const id = req.params.id;
 
-    // let sequelize retrieve post owned by id including the associated likes data
+    // let sequelize retrieve post owned by id including the associated likes
     // and sorts the posts in ascending order based on their id
     const post = await posts.findByPk(id, {
       include: [likes],
@@ -73,11 +73,11 @@ router.get("/byUserId/:id", validateJWT, async (req, res) => {
     // get the passed in id
     const userId = req.params.id;
 
-    // let sequelize retrieve all posts owned by userId, including the associated likes data
-    // and sorts the posts in ascending order based on their id
+    // let sequelize retrieve all posts owned by userId, including the associated likes
+    // and comments and sorts the posts in ascending order based on their id
     const listOfPosts = await posts.findAll({
       where: { userId: userId },
-      include: [likes],
+      include: [likes, comments],
       order: [["id", "ASC"]],
     });
 
