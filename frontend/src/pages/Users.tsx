@@ -76,7 +76,7 @@ const Users = () => {
     <>
       {authState.status ? (
         users.length === 0 ? (
-          <div className="text-center text-2xl font-bold">
+          <div className="text-center text-2xl font-bold mt-10">
             There are currently no other users in Social Posts!
           </div>
         ) : (
