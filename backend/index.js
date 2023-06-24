@@ -28,8 +28,13 @@ app.use("/comments", commentsRouter);
 app.use("/likes", likesRouter);
 
 const db = require("./models");
-db.sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Express Server Running on Port ${PORT}`);
+db.sequelize
+  .sync()
+  .then(() => {
+    app.listen(PORT || 5001, () => {
+      console.log(`Express Server Running on Port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
   });
-});
